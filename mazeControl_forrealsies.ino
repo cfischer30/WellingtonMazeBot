@@ -58,20 +58,26 @@ void setup() {
 	delay(100);  
   int startAngle = readCompassAzimuth();
   //targetAngle = currentAngle;
-  int driveTime = 8000;
+  int driveTime = 30000;
   int startTime = millis();
+  analogWrite(left1, 140);
+  analogWrite(right1, 170);
+  
+
+  /*
   while (time < startTime+driveTime) {
     currentAngle = readCompassAzimuth();
     time=millis();
-    targetSpeed=120;
+    targetSpeed=100;
     targetAngle=startAngle;
     lcdStatus(spdCol,spdRow,"Right S",float(rightSpeedVal));
     lcdStatus(actCol,actRow,"Left S",float(leftSpeedVal));
     lcdStatus(corrCol,corrRow,"Correction A",float(correctionAngle));
-    lcdStatus(tarCol,tarRow,"Current Angle",float(targetAngle));
+    lcdStatus(tarCol,tarRow,"Current Angle",float(currentAngle));
     //correctionAngle = 90;
     moveControl();
   }
+  */
   //stopCar();
   /*
   targetAngle=currentAngle+90;
@@ -88,7 +94,7 @@ void setup() {
     moveControl();
   }
   */
-  stopCar();
+  //stopCar();
   
 }
 
