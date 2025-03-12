@@ -60,6 +60,7 @@ void moveControl(){
 	// temporarily comment out speed correction to test straight drive
   speedCorrection = int(correctionAngle * proportionalRate);
   //speedCorrection = 0;
+
 	rightSpeedVal = targetSpeed + speedCorrection;
 	if(rightSpeedVal > maxSpeed)
 		{rightSpeedVal = maxSpeed;}
@@ -183,6 +184,7 @@ int findTargetAngle(int currentAngle,int correction){
 int findCorrectionAngle(int currentAngle, int targetAngle){
   int correctionAngle;
   correctionAngle = targetAngle - currentAngle;
+  //correctionAngle = currentAngle - targetAngle;
   if (correctionAngle < -180){
     correctionAngle = correctionAngle + 360;
   }
@@ -190,5 +192,16 @@ int findCorrectionAngle(int currentAngle, int targetAngle){
     correctionAngle = correctionAngle - 360;
   }
   return(correctionAngle);
+}
+
+int distanceSensor(){
+  digitalWrite(trigPin, LOW);  
+	delayMicroseconds(2);  
+	digitalWrite(trigPin, HIGH);  
+	delayMicroseconds(10);  
+	digitalWrite(trigPin, LOW);  
+  duration = pulseIn(echoPin, HIGH);  
+  distance = (duration*.0343)/2;  
+	return distance;
 }
   

@@ -18,14 +18,7 @@ An angle of 97 should use the ascii string
 
 */
 #include "Setup.h"
-/*
-float currentAngle; //if MPU6050 is flat, angle = Z = yaw
-float targetAngle = 0;
-float deltaAngle;
-int targetSpeed = 0;
-int speedCorrection;
-int correctionAngle; 
-float angleTolerance = 7.0;*/
+
 
 void setup() {
   setupa();
@@ -47,37 +40,37 @@ void setup() {
   // if they don't match, call moveContol
  
 
-  digitalWrite(trigPin, LOW);  
-	delayMicroseconds(2);  
-	digitalWrite(trigPin, HIGH);  
-	delayMicroseconds(10);  
-	digitalWrite(trigPin, LOW);  
-  duration = pulseIn(echoPin, HIGH);  
-  distance = (duration*.0343)/2;  
-	Serial.println(distance);  
-	delay(100);  
+ Serial.begin(9600);
   int startAngle = readCompassAzimuth();
   //targetAngle = currentAngle;
-  int driveTime = 30000;
+  int driveTime = 20000;
   int startTime = millis();
-  analogWrite(left1, 140);
-  analogWrite(right1, 170);
-  
 
-  /*
-  while (time < startTime+driveTime) {
+  while (time < startTime+driveTime && distanceSensor()>20) {
     currentAngle = readCompassAzimuth();
     time=millis();
-    targetSpeed=100;
+    targetSpeed=200;
     targetAngle=startAngle;
     lcdStatus(spdCol,spdRow,"Right S",float(rightSpeedVal));
     lcdStatus(actCol,actRow,"Left S",float(leftSpeedVal));
     lcdStatus(corrCol,corrRow,"Correction A",float(correctionAngle));
     lcdStatus(tarCol,tarRow,"Current Angle",float(currentAngle));
+    
+    Serial.print("target: ");
+    Serial.println(targetAngle);
+    Serial.print("current: ");
+    Serial.println(currentAngle);
+    Serial.print("left: ");
+    Serial.println(leftSpeedVal);
+    Serial.print("right: ");
+    Serial.println(rightSpeedVal);
+    
     //correctionAngle = 90;
+
+     Serial.print("current: ");
+    Serial.println(currentAngle);
     moveControl();
   }
-  */
   //stopCar();
   /*
   targetAngle=currentAngle+90;
@@ -94,7 +87,7 @@ void setup() {
     moveControl();
   }
   */
-  //stopCar();
+  stopCar();
   
 }
 

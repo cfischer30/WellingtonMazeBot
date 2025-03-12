@@ -14,7 +14,7 @@
 int xMax = -9999, yMax = -9999, zMax = -9999;
 int xMin = 9999, yMin = 9999, zMin = 9999;
 //int xOffset = 3228, yOffset = 1403, zOffset = 1369;
-int xOffset = 1135, yOffset = -452, zOffset = 413;
+int xOffset = 552, yOffset = 88.5, zOffset = 630;
 
 int compassZero = 0;
 
@@ -110,10 +110,11 @@ int readCompassAzimuth() {
   //a = int(atan2(double(y),double(x))*180.000/3.1415);
   //a = a - compassZero;
   if(a < 0){a = 360 + a;}
-
+/*
   Serial.print("A Value: ");
   Serial.println(a);
   Serial.println(" ");
+  */
   //delay(1000);
   
   return(a);

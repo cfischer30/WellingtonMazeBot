@@ -22,12 +22,12 @@ float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
 
 float elapsedTime, currentTime, previousTime;
 int c = 0;
-float proportionalRate = .1; //speed adjustment per degree of error
+float proportionalRate = 3; //speed adjustment per degree of error
 float maxRate = 120;
 long int maxDuration = 600000;  // run duration in ms
 
-const int maxSpeed = 170; //max PWM value written to motor speed pin. It is typically 255.
-const int minSpeed = 50; //min PWM value at which motor moves
+const int maxSpeed = 255; //max PWM value written to motor speed pin. It is typically 255.
+const int minSpeed = 160; //min PWM value at which motor moves
 
 float currentAngle; //if MPU6050 is flat, angle = Z = yaw
 float targetAngle = 0;
@@ -35,7 +35,7 @@ float deltaAngle;
 int targetSpeed = 0;
 int speedCorrection;
 int correctionAngle;
-float angleTolerance = 10;
+float angleTolerance = 5;
 int dataIsSpeed = 0;
 int dataIsAngle = 0;
 // lcd display variables
@@ -44,11 +44,11 @@ int spdRow=0, spdCol=14, tarRow=3,tarCol=14,actRow=1,actCol=14, corrRow=2, corrC
 
 // for an H bridge with single pin direction control, use only pins left1 and right1
 //const int left1 = 4;  //for L298N control
-const int left1 = 8; // MD20A control
-const int left2 = 7;     // ignored in MD20A
+const int left1 = 9; // MD20A control
+const int left2 = 10;     // ignored in MD20A
 //const int right1 = 7;   // for L298n control
-const int right1 = 10;  // for MD20A
-const int right2 = 9;    // ignored in MD20A
+const int right1 = 7;  // for MD20A
+const int right2 = 8;    // ignored in MD20A
 
 //int rightForward = 10; //7
 //int rightReverse = 9; //6
@@ -61,9 +61,9 @@ const int right2 = 9;    // ignored in MD20A
 
 
 // const int leftSpeed = 10;  // L298N
-const int leftEnable = 6;      // MD20A
+const int leftEnable = 11;      // MD20A
 // const int rightSpeed = 11;   //L298N
-const int rightEnable = 11;   // MD20A
+const int rightEnable = 6;   // MD20A
 
 int leftSpeedVal, rightSpeedVal;
 
