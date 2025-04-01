@@ -24,6 +24,9 @@ void stopCar();
 void moveControl();
 int findTargetAngle(int currentAngle,int correction);
 int findCorrectionAngle(int currentAngle, int targetAngle);
+int distanceSensor();
+int distanceSensorRight();
+int distanceSensorLeft();
 
 void moveControl(){
  // readAcceleration();
@@ -56,25 +59,35 @@ void moveControl(){
   void driving(){   // called my moveControl
   forward();   // sets forward & reverse pins appropriately on H bridge
 	//correctionAngle = targetAngle - currentAngle;
-  correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
+  //correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
 	// temporarily comment out speed correction to test straight drive
-  speedCorrection = int(correctionAngle * proportionalRate);
+  //speedCorrection = int(correctionAngle * proportionalRate);
   //speedCorrection = 0;
-
-	rightSpeedVal = targetSpeed + speedCorrection;
+  if(distanceSensorLeft()<20){
+    correctionAngle = findCorrectionAngle(currentAngle, targetAngle+10);
+  }else if(distanceSensorRight()<20){
+    targetAngle -= 10;
+  }else{
+   correctionAngle = findCorrectionAngle(currentAngle, targetAngle-10);
+  }
+  speedCorrection = int(correctionAngle * proportionalRate);
+	rightSpeedVal = targetSpeed - speedCorrection;
 	if(rightSpeedVal > maxSpeed)
 		{rightSpeedVal = maxSpeed;}
 	else if(rightSpeedVal < minSpeed)
 		{rightSpeedVal = minSpeed;}
-		
-	leftSpeedVal = targetSpeed - speedCorrection;
+	leftSpeedVal = targetSpeed + speedCorrection;
 	if(leftSpeedVal > maxSpeed)
 		{leftSpeedVal = maxSpeed;}
 	else if (leftSpeedVal < minSpeed)
 		{leftSpeedVal = minSpeed;}
+  // check left and right distances
+
 	analogWrite(rightEnable,rightSpeedVal);
-  analogWrite(leftEnable,leftSpeedVal); 
-  delay(100);  
+  analogWrite(leftEnable,leftSpeedVal);
+
+  //analogWrite(rightEnable,0);
+ // delay(100);  
   }
 	
 void rotate (){//called by void loop(), which isDriving = false
@@ -184,7 +197,8 @@ int findTargetAngle(int currentAngle,int correction){
 int findCorrectionAngle(int currentAngle, int targetAngle){
   int correctionAngle;
   correctionAngle = targetAngle - currentAngle;
-  //correctionAngle = currentAngle - targetAngle;
+  //correctionAngle = currentAngle - targetAngle;  confirmed after compas azimuth correctee
+
   if (correctionAngle < -180){
     correctionAngle = correctionAngle + 360;
   }
@@ -200,8 +214,29 @@ int distanceSensor(){
 	digitalWrite(trigPin, HIGH);  
 	delayMicroseconds(10);  
 	digitalWrite(trigPin, LOW);  
-  duration = pulseIn(echoPin, HIGH);  
-  distance = (duration*.0343)/2;  
-	return distance;
+  int duration = pulseIn(echoPin, HIGH);  
+  int distance = (duration*.0343)/2;  
+	return(distance);
 }
+int distanceSensorLeft(){
+  digitalWrite(trigPinLeft, LOW);  
+	delayMicroseconds(2);  
+	digitalWrite(trigPinLeft, HIGH);  
+	delayMicroseconds(10);  
+	digitalWrite(trigPinLeft, LOW);  
+  float durationLeft = pulseIn(echoPinLeft, HIGH);  
+  int distanceLeft = (durationLeft*.0343)/2;  
+	return(distanceLeft);
+}
+int distanceSensorRight(){
+  digitalWrite(trigPinRight, LOW);  
+	delayMicroseconds(2);  
+	digitalWrite(trigPinRight, HIGH);  
+	delayMicroseconds(10);  
+	digitalWrite(trigPinRight, LOW);  
+  float durationRight = pulseIn(echoPinRight, HIGH);  
+  int distanceRight = (durationRight*.0343)/2;  
+	return(distanceRight);
+}
+  
   

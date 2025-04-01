@@ -45,17 +45,18 @@ void setup() {
   //targetAngle = currentAngle;
   int driveTime = 20000;
   int startTime = millis();
-
-  while (time < startTime+driveTime && distanceSensor()>20) {
+  while (time < startTime+driveTime) { //&& distanceSensor()>10
     currentAngle = readCompassAzimuth();
     time=millis();
-    targetSpeed=200;
+    targetSpeed=0;
     targetAngle=startAngle;
+    Serial.println(distanceSensorLeft());
+    /*
     lcdStatus(spdCol,spdRow,"Right S",float(rightSpeedVal));
     lcdStatus(actCol,actRow,"Left S",float(leftSpeedVal));
     lcdStatus(corrCol,corrRow,"Correction A",float(correctionAngle));
     lcdStatus(tarCol,tarRow,"Current Angle",float(currentAngle));
-    
+
     Serial.print("target: ");
     Serial.println(targetAngle);
     Serial.print("current: ");
@@ -64,12 +65,10 @@ void setup() {
     Serial.println(leftSpeedVal);
     Serial.print("right: ");
     Serial.println(rightSpeedVal);
-    
+    */
     //correctionAngle = 90;
-
-     Serial.print("current: ");
-    Serial.println(currentAngle);
     moveControl();
+
   }
   //stopCar();
   /*

@@ -4,9 +4,16 @@
 #include <LiquidCrystal_I2C.h>  // librar for I2C 2 row x 16 column LCD
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 20 column and 4 line display
 
-const int echoPin=3;
-const int trigPin=4;
+const int echoPin=4;
+const int trigPin=3;
+const int echoPinLeft=12;
+const int trigPinLeft=13; 
+const int echoPinRight=1;
+const int trigPinRight=2;
+
 float duration, distance;  
+float durationLeft,distanceLeft;
+float durationRight,distanceRight;
 
 const int baudRate = 9600;
 long time;
@@ -22,12 +29,12 @@ float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
 
 float elapsedTime, currentTime, previousTime;
 int c = 0;
-float proportionalRate = 3; //speed adjustment per degree of error
+float proportionalRate = 5; //speed adjustment per degree of error
 float maxRate = 120;
 long int maxDuration = 600000;  // run duration in ms
 
 const int maxSpeed = 255; //max PWM value written to motor speed pin. It is typically 255.
-const int minSpeed = 160; //min PWM value at which motor moves
+const int minSpeed = 140; //min PWM value at which motor moves
 
 float currentAngle; //if MPU6050 is flat, angle = Z = yaw
 float targetAngle = 0;
@@ -35,7 +42,7 @@ float deltaAngle;
 int targetSpeed = 0;
 int speedCorrection;
 int correctionAngle;
-float angleTolerance = 5;
+float angleTolerance = 3;
 int dataIsSpeed = 0;
 int dataIsAngle = 0;
 // lcd display variables
@@ -44,8 +51,8 @@ int spdRow=0, spdCol=14, tarRow=3,tarCol=14,actRow=1,actCol=14, corrRow=2, corrC
 
 // for an H bridge with single pin direction control, use only pins left1 and right1
 //const int left1 = 4;  //for L298N control
-const int left1 = 9; // MD20A control
-const int left2 = 10;     // ignored in MD20A
+const int left1 = 10; // MD20A control
+const int left2 = 9;     // ignored in MD20A
 //const int right1 = 7;   // for L298n control
 const int right1 = 7;  // for MD20A
 const int right2 = 8;    // ignored in MD20A
@@ -101,6 +108,12 @@ const int buttonPin = 2;
 void setupa() {
   pinMode(trigPin, OUTPUT);  
 	pinMode(echoPin, INPUT);  
+
+  pinMode(trigPinLeft, OUTPUT);  
+	pinMode(echoPinLeft, INPUT);  
+
+  pinMode(trigPinRight, OUTPUT);  
+	pinMode(echoPinRight, INPUT);  
 
   time=millis();
   Serial.begin(baudRate);
