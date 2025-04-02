@@ -6,7 +6,7 @@ rotate() - rotates robot when not moving
 changeSpeed() - manages minimum and maximum PWM settings
 */
 
-
+#include "gyro.h"
 void forward();
 void left();
 void right();
@@ -24,20 +24,28 @@ int findCorrectionAngle(int currentAngle, int targetAngle);
 int distanceSensor();
 int distanceSensorRight();
 int distanceSensorLeft();
+int right_offset = 30;
 
 void moveControl(){
- // readAcceleration();
+  Serial.print("left: ");
+  Serial.println(distanceSensorLeft());
+  Serial.print("right: ");
+  Serial.println(distanceSensorRight());
+  Serial.print("fwd: ");
+  Serial.println(distanceSensor());
+  
+  readAcceleration();
   previousTime = currentTime;
   currentTime = micros();
   elapsedTime = (currentTime - previousTime) / 1000000;
   
   //uncomment to use accelerometer integrated Azimuth / yaw angle
-  /*readGyro();
-  GyroX -= GyroErrorX;
-  GyroY -= GyroErrorY;
-  GyroZ -= GyroErrorZ;
-  yaw += GyroZ * elapsedTime;
-  currentAngle = yaw;*/
+  //*readGyro();
+  //GyroX -= GyroErrorX;
+  //GyroY -= GyroErrorY;
+  //GyroZ -= GyroErrorZ;
+  //yaw += GyroZ * elapsedTime;
+  //currentAngle = yaw;*/
   //uncomment to use compass Azimuth / yaw angle
   //currentAngle = float(readCompass());
   
@@ -53,27 +61,42 @@ void moveControl(){
   
   // rewritten driving() function by Chris Fischer
   
-  void driving(){   // called my moveControl
+void driving(){   // called my moveControl
   forward();   // sets forward & reverse pins appropriately on H bridge
-	//correctionAngle = targetAngle - currentAngle;
-  //correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
-	// temporarily comment out speed correction to test straight drive
-  //speedCorrection = int(correctionAngle * proportionalRate);
-  //speedCorrection = 0;
-  if(distanceSensorLeft()<15){
-    correctionAngle = findCorrectionAngle(currentAngle, targetAngle+10);
-  }else if(distanceSensorRight()<15){
-    targetAngle -= 10;
+	correctionAngle = targetAngle - currentAngle;
+  correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
+
+  if(distanceSensorLeft()<4){
+    //stopCar();
+    analogWrite(rightEnable,0);
+ 
+    while(distanceSensorLeft()<5){
+         analogWrite(leftEnable,200);
+    }
+    Serial.println("Left sensed");
+  }else if(distanceSensorRight()<4){
+    //stopCar();
+    analogWrite(leftEnable,0);
+ 
+    while(distanceSensorRight()<5){
+         analogWrite(rightEnable,200);
+    }
+    //correctionAngle = findCorrectionAngle(currentAngle, targetAngle-20);
+    //Serial.println("Right sensed");
+    //7stopCar();
+
   }else{
-   correctionAngle = findCorrectionAngle(currentAngle, targetAngle-10);
+    correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
   }
+  correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
   speedCorrection = int(correctionAngle * proportionalRate);
-	rightSpeedVal = targetSpeed - speedCorrection;
+
+	rightSpeedVal = targetSpeed - speedCorrection + right_offset;
 	if(rightSpeedVal > maxSpeed)
 		{rightSpeedVal = maxSpeed;}
 	else if(rightSpeedVal < minSpeed)
 		{rightSpeedVal = minSpeed;}
-	leftSpeedVal = targetSpeed + speedCorrection;
+	leftSpeedVal = targetSpeed + speedCorrection-right_offset;
 	if(leftSpeedVal > maxSpeed)
 		{leftSpeedVal = maxSpeed;}
 	else if (leftSpeedVal < minSpeed)
@@ -211,8 +234,8 @@ int distanceSensor(){
 	digitalWrite(trigPin, HIGH);  
 	delayMicroseconds(10);  
 	digitalWrite(trigPin, LOW);  
-  int duration = pulseIn(echoPin, HIGH);  
-  int distance = (duration*.0343)/2;  
+  duration = pulseIn(echoPin, HIGH);  
+  distance = (duration*.0343)/2;  
 	return(distance);
 }
 int distanceSensorLeft(){
@@ -221,8 +244,8 @@ int distanceSensorLeft(){
 	digitalWrite(trigPinLeft, HIGH);  
 	delayMicroseconds(10);  
 	digitalWrite(trigPinLeft, LOW);  
-  float durationLeft = pulseIn(echoPinLeft, HIGH);  
-  int distanceLeft = (durationLeft*.0343)/2;  
+  durationLeft = pulseIn(echoPinLeft, HIGH);  
+  distanceLeft = (durationLeft*.0343)/2;  
 	return(distanceLeft);
 }
 int distanceSensorRight(){
@@ -231,7 +254,7 @@ int distanceSensorRight(){
 	digitalWrite(trigPinRight, HIGH);  
 	delayMicroseconds(10);  
 	digitalWrite(trigPinRight, LOW);  
-  float durationRight = pulseIn(echoPinRight, HIGH);  
-  int distanceRight = (durationRight*.0343)/2;  
+  durationRight = pulseIn(echoPinRight, HIGH);  
+  distanceRight = (durationRight*.0343)/2;  
 	return(distanceRight);
 }
