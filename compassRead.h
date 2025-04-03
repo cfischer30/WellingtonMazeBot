@@ -14,8 +14,7 @@
 int xMax = -9999, yMax = -9999, zMax = -9999;
 int xMin = 9999, yMin = 9999, zMin = 9999;
 //int xOffset = 3228, yOffset = 1403, zOffset = 1369;
-int xOffset = 520, yOffset = -1129, zOffset = 705;
-
+int xOffset = 633.50, yOffset = -1237.00, zOffset = -307.00;
 
 int compassZero = 0;
 

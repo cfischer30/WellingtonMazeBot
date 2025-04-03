@@ -27,13 +27,15 @@ int distanceSensorLeft();
 int right_offset = 30;
 
 void moveControl(){
+  /*
   Serial.print("left: ");
   Serial.println(distanceSensorLeft());
   Serial.print("right: ");
   Serial.println(distanceSensorRight());
   Serial.print("fwd: ");
   Serial.println(distanceSensor());
-  
+  */
+
   readAcceleration();
   previousTime = currentTime;
   currentTime = micros();
@@ -73,7 +75,7 @@ void driving(){   // called my moveControl
     while(distanceSensorLeft()<5){
          analogWrite(leftEnable,200);
     }
-    Serial.println("Left sensed");
+    // Serial.println("Left sensed");
   }else if(distanceSensorRight()<4){
     //stopCar();
     analogWrite(leftEnable,0);
@@ -120,6 +122,7 @@ void rotate (){//called by void loop(), which isDriving = false
   if (abs(correctionAngle) <= angleTolerance){
     stopCar();
   } else {
+    Serial.println(currentAngle);
     if (correctionAngle > 0) { //turn left
       left();  // left and right set direction pins but not PWM motor speed
     } else if (correctionAngle < 0) {//turn right
@@ -131,7 +134,7 @@ void rotate (){//called by void loop(), which isDriving = false
     if (abs(correctionAngle) > 30){
       targetZRate = 60;
     } else {
-      delay(100);
+      delay(1000);
       targetZRate = proportionalRate * abs(correctionAngle);
     }
     
@@ -147,11 +150,11 @@ void rotate (){//called by void loop(), which isDriving = false
     
     analogWrite(rightEnable,rightSpeedVal);
     analogWrite(leftEnable,leftSpeedVal); 
-    delay(50);
-    analogWrite(rightEnable,0);
-    analogWrite(leftEnable,0); 
+    //delay(50);
+    //analogWrite(rightEnable,0);
+    //analogWrite(leftEnable,0); 
    
-    
+    correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
 
     //analogWrite(rightSpeed, rightSpeedVal);
     //analogWrite(leftSpeed, leftSpeedVal);*/

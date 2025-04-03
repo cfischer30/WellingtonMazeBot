@@ -5,8 +5,6 @@
 /*   void calculateError() -- samples 200 gyro readings and calculates an average error with accelerometer steady
 /*   void readAngle() -- calculates the current angle from accelerometer data
 /* **************************************************/
-
-
 void readAcceleration() {
   Wire.beginTransmission(MPU);
   Wire.write(0x3B); // Start with register 0x3B (ACCEL_XOUT_H)
