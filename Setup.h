@@ -4,6 +4,8 @@
 #include <LiquidCrystal_I2C.h>  // librar for I2C 2 row x 16 column LCD
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 20 column and 4 line display
 
+void turnFunc();
+
 const int echoPin=2;
 const int trigPin=5;
 const int echoPinLeft=4;

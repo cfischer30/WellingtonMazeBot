@@ -14,8 +14,7 @@
 int xMax = -9999, yMax = -9999, zMax = -9999;
 int xMin = 9999, yMin = 9999, zMin = 9999;
 //int xOffset = 3228, yOffset = 1403, zOffset = 1369;
-int xOffset = 633.50, yOffset = -1237.00, zOffset = -307.00;
-
+int xOffset = 728, yOffset =0, zOffset = 65;
 int compassZero = 0;
 
 void compassSetup() {
@@ -111,11 +110,11 @@ int readCompassAzimuth() {
   // board markings indicate x,y but testing show z,x are horizontal plane
   //a = a - compassZero;
   if(a < 0){a = 360 + a;}
-/*
-  Serial.print("A Value: ");
-  Serial.println(a);
-  Serial.println(" ");
-  */
+
+  //Serial.print("A Value: ");
+  //Serial.println(a);
+  //Serial.println(" ");
+  
   //delay(1000);
   
   return(a);

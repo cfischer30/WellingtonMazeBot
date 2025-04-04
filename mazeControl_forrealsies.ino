@@ -1,3 +1,4 @@
+
 /*   Drive Control 2
 By Chris Fischer
 Based on Drive Control -- same principal, but cleaned up
@@ -21,7 +22,12 @@ An angle of 97 should use the ascii string
 
 void setup() {
   setupa();
-  queue("front","left"); 
+  Serial.begin(9600);
+  int driveTime = 5000;
+  int startTime = millis();
+ 
+  targetSpeed = 180;
+  queue("front","right"); 
 
   /*
   targetSpeed = 0;
@@ -30,7 +36,7 @@ void setup() {
     currentAngle = readCompassAzimuth();
     moveControl();
   }
-  */
+  
   
   queue("front", "left"); //6
   queue("front", "right"); //7
@@ -56,18 +62,23 @@ void setup() {
   queue("front", "left"); //38
   queue("front", "left"); //39
   queue("front", "left"); //END!!!!!!
-  
+  */
 }
 
 
 void queue(String boundary, String turn) {
-  int startAngle = readCompassAzimuth();
+  int currentAngle = readCompassAzimuth();
   targetAngle = currentAngle;
   targetSpeed=120;
   if(boundary.equals("front")){
-    while(distanceSensor()>6 || distanceSensor()>1000){
+    Serial.println(distanceSensor());
+    while(distanceSensor()>8 || distanceSensor()>1000){
       currentAngle = readCompassAzimuth();
       moveControl();
+      lcdStatus(spdCol,spdRow,"Right S",float(rightSpeedVal));
+      lcdStatus(actCol,actRow,"Left S",float(leftSpeedVal));
+      lcdStatus(corrCol,corrRow,"Correction A",float(correctionAngle));
+      lcdStatus(tarCol,tarRow,"Current Angle",float(currentAngle));
       Serial.println(distanceSensor());
     }
   }
@@ -91,29 +102,38 @@ void queue(String boundary, String turn) {
 
 void turnFunc(String turn){
   Serial.println("turning!!");
-  int startAngle = readCompassAzimuth();
+  int currentAngle = readCompassAzimuth();
   targetSpeed = 0;
   if(turn.equals("left")){
-    targetAngle = currentAngle+80;
+    targetAngle = currentAngle-90;
+    Serial.println("left turning");
   }
   else{//(turn.equals("right"))
-    targetAngle = currentAngle-80;
+    targetAngle = currentAngle+90;
     //targetAngle = currentAngle+90;
+    Serial.println("right turning");
+    Serial.println(currentAngle);
   }
   
   //abs(currentAngle - targetAngle) < 1
-  int driveTime = 2000;
+  int driveTime = 10000;
   int startTime = millis();
-  while (time < startTime+driveTime && currentAngle - targetAngle != 0) {
+  correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
+  while (time < startTime+driveTime && correctionAngle != 0) {
     time = millis();
     currentAngle = readCompassAzimuth();
     moveControl();
     correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
+    lcdStatus(spdCol,spdRow,"Right S",float(rightSpeedVal));
+    lcdStatus(actCol,actRow,"Left S",float(leftSpeedVal));
+    lcdStatus(corrCol,corrRow,"Correction A",float(correctionAngle));
+    lcdStatus(tarCol,tarRow,"Current Angle",float(currentAngle));
   }
 }
 
 
 void loop(){
+  Serial.println(distanceSensor());
   /*
   Serial.print("left: ");
   Serial.println(distanceSensorLeft());

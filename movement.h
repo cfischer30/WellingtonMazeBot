@@ -65,9 +65,8 @@ void moveControl(){
   
 void driving(){   // called my moveControl
   forward();   // sets forward & reverse pins appropriately on H bridge
-	correctionAngle = targetAngle - currentAngle;
   correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
-
+  
   if(distanceSensorLeft()<4){
     //stopCar();
     analogWrite(rightEnable,0);
@@ -75,7 +74,7 @@ void driving(){   // called my moveControl
     while(distanceSensorLeft()<5){
          analogWrite(leftEnable,200);
     }
-    // Serial.println("Left sensed");
+     Serial.println("Left sensed");
   }else if(distanceSensorRight()<4){
     //stopCar();
     analogWrite(leftEnable,0);
@@ -84,21 +83,21 @@ void driving(){   // called my moveControl
          analogWrite(rightEnable,200);
     }
     //correctionAngle = findCorrectionAngle(currentAngle, targetAngle-20);
-    //Serial.println("Right sensed");
+    Serial.println("Right sensed");
     //7stopCar();
-
-  }else{
+  }
+  else{
     correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
   }
   correctionAngle = findCorrectionAngle(currentAngle, targetAngle);
   speedCorrection = int(correctionAngle * proportionalRate);
 
-	rightSpeedVal = targetSpeed - speedCorrection + right_offset;
+	rightSpeedVal = targetSpeed + speedCorrection + right_offset;
 	if(rightSpeedVal > maxSpeed)
 		{rightSpeedVal = maxSpeed;}
 	else if(rightSpeedVal < minSpeed)
 		{rightSpeedVal = minSpeed;}
-	leftSpeedVal = targetSpeed + speedCorrection-right_offset;
+	leftSpeedVal = targetSpeed - speedCorrection-right_offset;
 	if(leftSpeedVal > maxSpeed)
 		{leftSpeedVal = maxSpeed;}
 	else if (leftSpeedVal < minSpeed)
@@ -122,11 +121,11 @@ void rotate (){//called by void loop(), which isDriving = false
   if (abs(correctionAngle) <= angleTolerance){
     stopCar();
   } else {
-    Serial.println(currentAngle);
+    //Serial.println(currentAngle);
     if (correctionAngle > 0) { //turn left
-      left();  // left and right set direction pins but not PWM motor speed
+      right();  // left and right set direction pins but not PWM motor speed
     } else if (correctionAngle < 0) {//turn right
-      right();
+      left();
     }
 
     //setting up propoertional control, see Step 3 on the website
@@ -141,9 +140,9 @@ void rotate (){//called by void loop(), which isDriving = false
     if (round(correctionAngle) == 0){
       ;
     } else if (targetZRate > 0){
-      leftSpeedVal = changeSpeed(leftSpeedVal, +targetZRate);
-    } else {
       leftSpeedVal = changeSpeed(leftSpeedVal, -targetZRate);
+    } else {
+      leftSpeedVal = changeSpeed(leftSpeedVal, +targetZRate);
     }
     rightSpeedVal = leftSpeedVal;
     
